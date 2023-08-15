@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/user/dashboard',[UserController::class,'index'])->middleware(['auth:web'])->name('user.dashboard');
+Route::get('/dashboard',[UserController::class,'index'])->middleware(['auth:web'])->name('user.dashboard');
 
 
 require __DIR__.'/auth.php';
