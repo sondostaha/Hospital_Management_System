@@ -11,7 +11,7 @@ use App\Http\Controllers\Dashboard\Auth\RegisteredUserController;
 use App\Http\Controllers\Dashboard\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['middleware' => ['guest:admin'] , 'prefix' => ['admin']],function () {
+Route::group(['middleware' => ['guest:admin'] , 'prefix' => 'admin'],function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('admin.register');
 
@@ -35,7 +35,7 @@ Route::group(['middleware' => ['guest:admin'] , 'prefix' => ['admin']],function 
                 ->name('admin.password.store');
 });
 
-Route::group(['middleware' => ['auth:admin'] , 'prefix' => ['admin']],function () {
+Route::group(['middleware' => ['auth:admin'] , 'prefix' => 'admin'],function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
                 ->name('admin.verification.notice');
 
