@@ -26,11 +26,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(AdminLoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        if($request->authenticate() )
+        {
+            $request->session()->regenerate();
 
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::DASHBOARD);
+            return redirect()->intended(RouteServiceProvider::DASHBOARD);
+        }
+        return redirect()->back()->with(['name'=> 'your email is wrong or password please try again ']);
+       
     }
 
     /**
