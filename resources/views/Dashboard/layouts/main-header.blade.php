@@ -20,43 +20,30 @@
 						<ul class="nav">
 							<li class="">
 								<div class="dropdown  nav-itemd-none d-md-flex">
-									<a href="#" class="d-flex  nav-item nav-link pl-0 country-flag1" data-toggle="dropdown" aria-expanded="false">
+									<a href="#" class="text-info d-flex  nav-item nav-link pl-0 country-flag1" data-toggle="dropdown" aria-expanded="false">
+										@if (App::getLocale() == 'en')
 										<span class="avatar country-Flag mr-0 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/us_flag.jpg')}}" alt="img"></span>
-										<div class="my-auto">
-											<strong class="mr-2 ml-2 my-auto">English</strong>
-										</div>
+										<strong class="mr-2 ml-2 my-auto"> {{LaravelLocalization::getCurrentLocaleName() }}</strong>
+										@else
+										<span class="avatar country-Flag mr-0 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/eg_flag.png')}}" alt="img"></span>
+										<strong class="mr-2 ml-2 my-auto"> {{LaravelLocalization::getCurrentLocaleName() }}</strong>
+										@endif
+										
 									</a>
 									<div class="dropdown-menu dropdown-menu-left dropdown-menu-arrow" x-placement="bottom-end">
-										<a href="#" class="dropdown-item d-flex ">
-											<span class="avatar  ml-3 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/french_flag.jpg')}}" alt="img"></span>
-											<div class="d-flex">
-												<span class="mt-2">French</span>
-											</div>
-										</a>
-										<a href="#" class="dropdown-item d-flex">
-											<span class="avatar  ml-3 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/germany_flag.jpg')}}" alt="img"></span>
-											<div class="d-flex">
-												<span class="mt-2">Germany</span>
-											</div>
-										</a>
-										<a href="#" class="dropdown-item d-flex">
-											<span class="avatar ml-3 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/italy_flag.jpg')}}" alt="img"></span>
-											<div class="d-flex">
-												<span class="mt-2">Italy</span>
-											</div>
-										</a>
-										<a href="#" class="dropdown-item d-flex">
-											<span class="avatar ml-3 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/russia_flag.jpg')}}" alt="img"></span>
-											<div class="d-flex">
-												<span class="mt-2">Russia</span>
-											</div>
-										</a>
-										<a href="#" class="dropdown-item d-flex">
-											<span class="avatar  ml-3 align-self-center bg-transparent"><img src="{{URL::asset('Dashboard/img/flags/spain_flag.jpg')}}" alt="img"></span>
-											<div class="d-flex">
-												<span class="mt-2">spain</span>
-											</div>
-										</a>
+										
+										@foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+											<a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}"
+											href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+												@if($properties['native'] == "English")
+													<i class="flag-icon flag-icon-us"></i>
+												@elseif($properties['native'] == "العربية")
+													<i class="flag-icon flag-icon-eg"></i>
+												@endif
+												{{ $properties['native'] }}
+											</a>
+										@endforeach
+									  {{-- @endif --}}
 									</div>
 								</div>
 							</li>
@@ -254,7 +241,7 @@
 										<div class="d-flex wd-100p">
 											<div class="main-img-user"><img alt="" src="{{URL::asset('Dashboard/img/faces/6.jpg')}}" class=""></div>
 											<div class="mr-3 my-auto">
-												<h6>Petey Cruiser</h6><span>Premium Member</span>
+												<h6> {{Auth::user()->name}}</h6><span> {{Auth::user()->email}}</span>
 											</div>
 										</div>
 									</div>
@@ -263,7 +250,23 @@
 									<a class="dropdown-item" href=""><i class="bx bxs-inbox"></i>Inbox</a>
 									<a class="dropdown-item" href=""><i class="bx bx-envelope"></i>Messages</a>
 									<a class="dropdown-item" href=""><i class="bx bx-slider-alt"></i> Account Settings</a>
-									<a class="dropdown-item" href="{{ url('/' . $page='page-signin') }}"><i class="bx bx-log-out"></i> Sign Out</a>
+								
+									@if(Auth::guard('web')->user() == true)
+										<form method="POST" action="{{ route('user.logout') }}">
+										@csrf
+									  <a class="dropdown-item" href="{{route('user.logout')}}"
+									  onclick="event.preventDefault();this.closest('form').submit();">
+									  <i class="bx bx-log-out"></i>{{ __('User Log Out') }}
+									 </a>
+									
+									@elseif(Auth::guard('admin')->user() == true)
+									<form method="POST" action="{{ route('admin.logout') }}">
+										@csrf
+									  <a class="dropdown-item" href="{{route('admin.logout')}}"
+									  onclick="event.preventDefault();this.closest('form').submit();">
+									  <i class="bx bx-log-out"></i>{{ __('Admin Log Out') }}
+									 </a>
+									@endif
 								</div>
 							</div>
 							<div class="dropdown main-header-message right-toggle">
